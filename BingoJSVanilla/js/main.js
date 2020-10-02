@@ -11,16 +11,91 @@ const bombo = {
     catch_ball: function() {
         let pos = Math.floor(Math.random() * this.balls.length);
         this.balls_out.push(this.balls.splice(pos, 1)[0]);
+    },
+    card_create: function () {
+        // Sacamos 5 numeros del 1 al 9 aleatorios sin repetirse, las dos primeras lineas.
+        let lines = Array.from({length: 2}, (_,x) => {
+            let numbers = Array.from({length: 9}, (_,i) => i);
+            Array.from({length: 4}, (_,e) => numbers.splice(Math.floor(Math.random() * numbers.length), 1));
+            return numbers;
+        });
+
+        // Copiamos los arrays para poder trabjar con ellos sin perder informacion.
+        var card_pos = Array(3);
+        card_pos[0]=[...lines[0]];
+        card_pos[1]=[...lines[1]];
+
+        // Guardamos las repetidas y las borramos de lineas.
+        let num_rep = Array.from({length: card_pos[0].length}, (_,x) => {
+            if (card_pos[1].indexOf(card_pos[0][x]) >= 0) {
+                lines[1].splice(lines[1].indexOf(card_pos[0][x]), 1);
+                lines[0].splice(lines[0].indexOf(card_pos[0][x]), 1);
+                return card_pos[0][x];
+            }
+        }).filter(function (el) {return el != null;});
+
+        // Sacamos las lineas contrarias a las repetidas del 1 al 9.
+        let num_exc = Array.from({length: 9}, (_,i) => {
+            if (num_rep.indexOf(i) < 0) {
+                return i;
+            }
+        }).filter(function (el) {return el != null;});
+        
+        // Juntamos las dos lineas y se las restamos a las excluidas, obtenemos las posiciones que no han salido en ninguna linea.
+        var lines_con = lines[0].concat(lines[1]);
+        var miss_nums = num_exc.filter(el => !lines_con.includes(el));
+
+        // Apartir de los numeros de posiciones que han estado en alguna linea anterior elegimos aleatoriamente algunas de ellas hasta que la linea 3 tenga 5 posiciones para pintar.
+        lines[2] = Array.from({length: (5 - miss_nums.length)}, (_,i) => {
+            return lines_con.splice(Math.floor(Math.random() * lines_con.length), 1)[0];
+        });
+
+        
+        card_pos[2]=[...lines[2].concat(miss_nums)].sort();
+
+        // Sacamos los numeros del carton
+        var min;
+        Array.from({length: 9}, (_,i) => {
+            (i == 0) ? min = 1:min = i * 9;
+            numbers = Array.from({length: 9}, (_,e) => min+e);
+            Array.from({length: 6}, (_,e) => numbers.splice(Math.floor(Math.random() * numbers.length), 1));
+        });
+
+
+        console.log(numbers)
+
+        this.draw(card_pos, "card");
+    },
+    draw: function(data, type) {
+        if (type) {
+            var table = document.getElementById("table");
+            document.getElementById("table").innerHTML = "";
+            data.forEach(element => {
+                var row = table.insertRow(0);
+                for (let p = 0; p < 9; p++) {
+                    if (element.indexOf(p) < 0) {
+                        let row_cell = row.insertCell(0);
+                        row_cell.innerHTML = "";
+                        row_cell.style.background = "black";
+                    } else {
+                        let row_cell = row.insertCell(0);
+                        row_cell.innerHTML = "69";
+                        row_cell.style.fontSize = "23px";
+                    }
+                }
+            });
+        }
     }
 }
 
 document.getElementById('start').addEventListener('click', function() {
     bombo.bombo_create();
-    console.log(bombo.balls);
 }, false);
 
 document.getElementById('get').addEventListener('click', function() {
     bombo.catch_ball();
-    console.log(bombo.balls);
-    console.log(bombo.balls_out);
+}, false);
+
+document.getElementById('card').addEventListener('click', function() {
+    bombo.card_create();
 }, false);

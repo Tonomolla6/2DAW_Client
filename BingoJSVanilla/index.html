@@ -1,39 +1,62 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <title>BingoJS</title>
-        <style>
-            .button {
-                width: 100px;
-                background-color: black;
-                color: white;
-                padding: 10px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                border: 1px solid black;
-            }
+<head>
+    <title>BingoJS</title>
+    <style>
+        .button {
+            width: 100px;
+            background-color: black;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid black;
+        }
 
-            .button:hover {
-                color: black;
-                background-color: white;
-            }
+        .button:hover {
+            color: black;
+            background-color: white;
+        }
 
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-            }
-        </style>
-    </head>
+        div.buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+        }
 
-    <body>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        table,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid black;
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <table id="table"></table>
+    <div class="buttons">
         <div id="start" class="button">Start game</div>
         <div id="get" class="button">Get ball</div>
-    </body>
+        <div id="card" class="button">Bingo card</div>
+    </div>
+</body>
 
 </html>
 
