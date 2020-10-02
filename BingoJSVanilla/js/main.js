@@ -1,16 +1,31 @@
 const bombo = {
     balls: [],
     balls_out: [],
+    start_game: function () {
+        this.bombo_create();
+        this.balls_out = [];
+        let _this = this;
+        setInterval(function(){
+            if (Object.keys(_this.balls).length != 0) {
+                _this.get_ball();
+                _this.card_create();
+                _this.draw("bombo");
+            }
+         }, 1000);
+    },
     bombo_create: function () {
+        // Creamos las bolas.
         this.balls = Array.from({length: 99}, (_,i) => i + 1);
-        this.shuffle();
-    },
-    shuffle: function () {
+
+        // Mezclamos las bolas.
         this.balls.sort((a,b) => Math.random() - 0.5);
+
+        this.draw("bombo");
     },
-    catch_ball: function() {
+    get_ball: function() {
         let pos = Math.floor(Math.random() * this.balls.length);
         this.balls_out.push(this.balls.splice(pos, 1)[0]);
+        this.draw("get_ball");
     },
     card_create: function () {
         // Sacamos 5 numeros del 1 al 9 aleatorios sin repetirse, las dos primeras lineas.
@@ -56,10 +71,11 @@ const bombo = {
         var min;
         let bingo_card = [];
         Array.from({length: 9}, (_,i) => {
-            (i == 0) ? min = 1:min = i * 9;
-            let range = Array.from({length: 9}, (_,e) => min+e);
-            Array.from({length: 6}, (_,e) => range.splice(Math.floor(Math.random() * range.length), 1)[0]);            
+            (i == 0) ? min = 1:min = i * 10 + 1;
+            let range = Array.from({length: 10}, (_,e) => min+e);
             console.log(range);
+            Array.from({length: 7}, (_,e) => range.splice(Math.floor(Math.random() * range.length), 1)[0]);            
+            
             let count = 0;
             card_pos.map(function(line) {
                 i == 0 ? bingo_card[count] = []: null;
@@ -68,10 +84,9 @@ const bombo = {
             });
         });
 
-        console.log(bingo_card);
-        this.draw(bingo_card, "card");
+        this.draw("card", bingo_card);
     },
-    draw: function(data, type) {
+    draw: function(type, data) {
         if (type == "card") {
             let table = document.getElementById("table");
             // Reset table.
@@ -81,29 +96,47 @@ const bombo = {
                 var row = table.insertRow(0);
                 element = element.reverse();
                 for (let p = 0; p < 9; p++) {
+                    let row_cell = row.insertCell(0);
                     if (element[p]) {
-                        let row_cell = row.insertCell(0);
                         row_cell.innerHTML = element[p];
-                        row_cell.style.fontSize = "23px";
                     } else {
-                        let row_cell = row.insertCell(0);
                         row_cell.innerHTML = "";
                         row_cell.style.background = "black";
                     }
                 }
+            });
+        } else if (type == "bombo") {
+            let ball,number;
+            document.getElementById("bombo").innerHTML = "";
+            this.balls.map(function (el) {
+                ball = document.createElement("span");
+                number = document.createTextNode(el);
+
+                ball.appendChild(number);
+                document.getElementById("bombo").appendChild(ball);
+            });
+        } else if (type == "get_ball") {
+            let ball,number;
+            document.getElementById("bolas").innerHTML = "";
+            this.balls_out.map(function (el) {
+                ball = document.createElement("span");
+                number = document.createTextNode(el);
+
+                ball.appendChild(number);
+                document.getElementById("bolas").appendChild(ball);
             });
         }
     }
 }
 
 document.getElementById('start').addEventListener('click', function() {
-    bombo.bombo_create();
+    bombo.start_game();
 }, false);
 
-document.getElementById('get').addEventListener('click', function() {
-    bombo.catch_ball();
-}, false);
+// document.getElementById('get').addEventListener('click', function() {
+//     bombo.catch_ball();
+// }, false);
 
-document.getElementById('card').addEventListener('click', function() {
-    bombo.card_create();
-}, false);
+// document.getElementById('card').addEventListener('click', function() {
+//     bombo.card_create();
+// }, false);
