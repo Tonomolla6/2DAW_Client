@@ -49,38 +49,46 @@ const bombo = {
         lines[2] = Array.from({length: (5 - miss_nums.length)}, (_,i) => {
             return lines_con.splice(Math.floor(Math.random() * lines_con.length), 1)[0];
         });
-
         
         card_pos[2]=[...lines[2].concat(miss_nums)].sort();
 
-        // Sacamos los numeros del carton
+        // Sacamos los numeros del carton ordenados.
         var min;
+        let bingo_card = [];
         Array.from({length: 9}, (_,i) => {
             (i == 0) ? min = 1:min = i * 9;
-            numbers = Array.from({length: 9}, (_,e) => min+e);
-            Array.from({length: 6}, (_,e) => numbers.splice(Math.floor(Math.random() * numbers.length), 1));
+            let range = Array.from({length: 9}, (_,e) => min+e);
+            Array.from({length: 6}, (_,e) => range.splice(Math.floor(Math.random() * range.length), 1)[0]);            
+            console.log(range);
+            let count = 0;
+            card_pos.map(function(line) {
+                i == 0 ? bingo_card[count] = []: null;
+                    line.indexOf(i) >= 0 ? bingo_card[count].push(range[count]) : bingo_card[count].push("");
+                count++;
+            });
         });
 
-
-        console.log(numbers)
-
-        this.draw(card_pos, "card");
+        console.log(bingo_card);
+        this.draw(bingo_card, "card");
     },
     draw: function(data, type) {
-        if (type) {
-            var table = document.getElementById("table");
+        if (type == "card") {
+            let table = document.getElementById("table");
+            // Reset table.
             document.getElementById("table").innerHTML = "";
-            data.forEach(element => {
+            const reverse = data.reverse();
+            reverse.forEach(element => {
                 var row = table.insertRow(0);
+                element = element.reverse();
                 for (let p = 0; p < 9; p++) {
-                    if (element.indexOf(p) < 0) {
+                    if (element[p]) {
+                        let row_cell = row.insertCell(0);
+                        row_cell.innerHTML = element[p];
+                        row_cell.style.fontSize = "23px";
+                    } else {
                         let row_cell = row.insertCell(0);
                         row_cell.innerHTML = "";
                         row_cell.style.background = "black";
-                    } else {
-                        let row_cell = row.insertCell(0);
-                        row_cell.innerHTML = "69";
-                        row_cell.style.fontSize = "23px";
                     }
                 }
             });
