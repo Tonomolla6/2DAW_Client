@@ -11,7 +11,7 @@ const bombo = {
                 _this.card_create();
                 _this.draw("bombo");
             }
-         }, 1000);
+         }, 3000);
     },
     bombo_create: function () {
         // Creamos las bolas.
@@ -39,7 +39,7 @@ const bombo = {
         var card_pos = Array(3);
         card_pos[0]=[...lines[0]];
         card_pos[1]=[...lines[1]];
-
+        
         // Guardamos las repetidas y las borramos de lineas.
         let num_rep = Array.from({length: card_pos[0].length}, (_,x) => {
             if (card_pos[1].indexOf(card_pos[0][x]) >= 0) {
